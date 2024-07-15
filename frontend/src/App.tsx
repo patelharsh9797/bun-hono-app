@@ -1,17 +1,24 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { useEffect, useState } from "react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/hono";
 
 function App() {
-  const [totalSpent, setTotalSpent] = useState<number>(0)
+  const [totalSpent, setTotalSpent] = useState<number>(0);
 
   useEffect(() => {
     async function fetchData() {
-      const res = await fetch("/api/expenses/total-spent")
-      const data = await res.json()
-      setTotalSpent(data.total)
+      const res = await api.expenses["total-spent"].$get();
+      const data = await res.json();
+      setTotalSpent(data.total);
     }
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
   return (
     <>
       <Card className="w-[350px] m-auto">
@@ -19,12 +26,10 @@ function App() {
           <CardTitle>Total Spent</CardTitle>
           <CardDescription>The total amount you've spent.</CardDescription>
         </CardHeader>
-        <CardContent>
-          {totalSpent}
-        </CardContent>
-      </Card >
+        <CardContent>{totalSpent}</CardContent>
+      </Card>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
