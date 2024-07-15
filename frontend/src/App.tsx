@@ -1,8 +1,28 @@
-function App() {
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useEffect, useState } from "react"
 
+function App() {
+  const [totalSpent, setTotalSpent] = useState<number>(0)
+
+  useEffect(() => {
+    async function fetchData() {
+      const res = await fetch("/api/expenses/total-spent")
+      const data = await res.json()
+      setTotalSpent(data.total)
+    }
+    fetchData()
+  }, [])
   return (
     <>
-      <div className='bg-foreground text-muted-foreground'>Hello</div>
+      <Card className="w-[350px] m-auto">
+        <CardHeader>
+          <CardTitle>Total Spent</CardTitle>
+          <CardDescription>The total amount you've spent.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {totalSpent}
+        </CardContent>
+      </Card >
     </>
   )
 }
