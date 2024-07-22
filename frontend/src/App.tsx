@@ -5,20 +5,26 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useEffect, useState } from "react";
 import { api } from "@/lib/hono";
+import { useQuery } from "@tanstack/react-query";
+
+async function getTotalSpent() {
+  const res = await api.expenses["total-spent"].$get();
+  if (!res.ok) {
+    throw new Error("Server Error!!!");
+  }
+  const data = await res.json();
+  return data;
+}
 
 function App() {
-  const [totalSpent, setTotalSpent] = useState<number>(0);
+  const { data, error, isPending } = useQuery({
+    queryKey: ["get-total-spent"],
+    queryFn: getTotalSpent,
+  });
 
-  useEffect(() => {
-    async function fetchData() {
-      const res = await api.expenses["total-spent"].$get();
-      const data = await res.json();
-      setTotalSpent(data.total);
-    }
-    fetchData();
-  }, []);
+  if (error) return "An error has occured." + error.message;
+
   return (
     <>
       <Card className="w-[350px] m-auto">
@@ -26,7 +32,7 @@ function App() {
           <CardTitle>Total Spent</CardTitle>
           <CardDescription>The total amount you've spent.</CardDescription>
         </CardHeader>
-        <CardContent>{totalSpent}</CardContent>
+        <CardContent>{isPending ? "..." : data.total}</CardContent>
       </Card>
     </>
   );
