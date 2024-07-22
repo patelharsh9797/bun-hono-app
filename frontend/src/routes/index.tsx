@@ -1,3 +1,4 @@
+import { createFileRoute } from "@tanstack/react-router";
 import {
   Card,
   CardContent,
@@ -7,6 +8,10 @@ import {
 } from "@/components/ui/card";
 import { api } from "@/lib/hono";
 import { useQuery } from "@tanstack/react-query";
+
+export const Route = createFileRoute("/")({
+  component: App,
+});
 
 async function getTotalSpent() {
   const res = await api.expenses["total-spent"].$get();
@@ -38,4 +43,3 @@ function App() {
   );
 }
 
-export default App;
