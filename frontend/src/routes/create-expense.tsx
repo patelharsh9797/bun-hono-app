@@ -5,6 +5,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import type { FieldApi } from "@tanstack/react-form";
 import { api } from "@/lib/hono";
+import { useState } from "react";
 
 export const Route = createFileRoute("/create-expense")({
   component: CreateExpense,
@@ -24,6 +25,7 @@ function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
 
 function CreateExpense() {
   const navigate = useNavigate();
+  const [error, seterror] = useState("");
   const form = useForm({
     defaultValues: {
       title: "",
@@ -35,13 +37,13 @@ function CreateExpense() {
       const res = await api.expenses.$post({
         json: value,
       });
-      console.log(res);
 
       if (!res.ok) {
-        throw new Error("Server Error!!!");
+        const text = await res.text();
+        seterror(text || "INternal Server Error!!!");
+      } else {
+        navigate({ to: "/expenses" });
       }
-
-      navigate({ to: "/expenses" });
     },
   });
 
@@ -94,6 +96,8 @@ function CreateExpense() {
             </>
           )}
         />
+
+        {error && <div className="p-2 rounded bg-red-500">{error}</div>}
 
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
