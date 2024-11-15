@@ -28,7 +28,7 @@ function App() {
     queryFn: getTotalSpent,
   });
 
-  if (error) return "An error has occured." + error.message;
+  if (error) return "An error has occurred." + error.message;
 
   return (
     <>
@@ -42,4 +42,3 @@ function App() {
     </>
   );
 }
-
